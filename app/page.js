@@ -78,7 +78,7 @@ export default function Home() {
             <Typography variant='h5' gutterBottom>Basic</Typography>
             <Typography variant='h6' gutterBottom>Free</Typography>
             <Typography>{' '}Access to basic flashcard features and limited storage</Typography>
-            <Button variant='contained' color="primary" sx={{mt: 2}}>Choose Basic</Button>
+            <Button variant='contained' color="primary" sx={{mt: 2}} href="/generate">Choose Basic</Button>
             </Box>
           </Grid>
           <Grid item xs={12} md={4}>
