@@ -17,7 +17,7 @@ import {
   DialogActions,
 } from '@mui/material'
 import { doc, collection, getDoc, writeBatch } from 'firebase/firestore'
-import { db } from './firebaseConfig' // Assuming you have firebase config setup
+import { db } from '../../firebase' // Assuming you have firebase config setup
 
 export default function Generate() {
   const [text, setText] = useState('')
@@ -103,7 +103,8 @@ export default function Generate() {
           multiline
           rows={4}
           variant="outlined"
-          sx={{ mb: 2 }}
+          inputProps={{ style: { color: "white" } }}
+          sx={{ mb: 2, border: '1px solid white' }}
         />
         <Button
           variant="contained"
