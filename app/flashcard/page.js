@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useUser } from '@clerk/clerk-react';
 import { collection, doc, getDocs } from 'firebase/firestore';
-import { db } from '../firebase-config';
+import { db } from '../../firebase';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
