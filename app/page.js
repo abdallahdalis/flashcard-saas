@@ -52,17 +52,43 @@ export default function Home() {
         </Button>
       </Box>
 
-      <Box sx={{ my: 6 }}>
+      <Box sx={{ my: 6, textAlign: 'center' }}>
         <Typography variant="h4" component="h2" gutterBottom>Features</Typography>
         <Grid container spacing={4}>
-          {/* Feature items */}
+          <Grid item xs={12} md={4}>
+            <Typography variant='h6'>Easy Text Input</Typography>
+            <Typography>{' '}Simply input your text and let our software do the rest</Typography>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Typography variant='h6'>Easy Text Input</Typography>
+            <Typography>{' '}Simply input your text and let our software do the rest</Typography>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Typography variant='h6'>Easy Text Input</Typography>
+            <Typography>{' '}Simply input your text and let our software do the rest</Typography>
+          </Grid>
         </Grid>
       </Box>
 
       <Box sx={{ my: 6, textAlign: 'center' }}>
         <Typography variant="h4" component="h2" gutterBottom>Pricing</Typography>
         <Grid container spacing={4} justifyContent="center">
-          {/* Pricing plans */}
+          <Grid item xs={12} md={4}>
+            <Box sx={{border: '1px solid white', p: 3, borderRadius: 2}}>
+            <Typography variant='h5' gutterBottom>Basic</Typography>
+            <Typography variant='h6' gutterBottom>Free</Typography>
+            <Typography>{' '}Access to basic flashcard features and limited storage</Typography>
+            <Button variant='contained' color="primary" sx={{mt: 2}}>Choose Basic</Button>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Box sx={{border: '1px solid white', p: 3, borderRadius: 2}}>
+            <Typography variant='h5' gutterBottom>Pro</Typography>
+            <Typography variant='h6' gutterBottom>$5/month</Typography>
+            <Typography>{' '}Unlimited flashcards and storage with priority support</Typography>
+            <Button variant='contained' color="primary" sx={{mt: 2}}>Choose Pro</Button>
+            </Box>
+          </Grid>
         </Grid>
       </Box>
     </main>
