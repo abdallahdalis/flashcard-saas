@@ -21,7 +21,7 @@ export default function Flashcard() {
   useEffect(() => {
     async function getFlashcards() {
       if (!setName || !user) return;
-      const colRef = collection(doc(collection(db, 'users'), user.id), 'flashcardSets', setName, 'flashcards');
+      const colRef = collection(doc(collection(db, 'users'), user.id), setName);
       const docs = await getDocs(colRef);
       const flashcards = [];
       docs.forEach((doc) => {
