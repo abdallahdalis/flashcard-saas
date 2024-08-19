@@ -16,12 +16,12 @@ export default function Flashcard() {
   const [flashcards, setFlashcards] = useState([]);
   const [flipped, setFlipped] = useState({});
   const searchParams = useSearchParams();
-  const search = searchParams.get('id');
+  const setName = searchParams.get('id');
 
   useEffect(() => {
-    async function getFlashcard() {
-      if (!search || !user) return;
-      const colRef = collection(doc(collection(db, 'users'), user.id), search);
+    async function getFlashcards() {
+      if (!setName || !user) return;
+      const colRef = collection(doc(collection(db, 'users'), user.id), setName);
       const docs = await getDocs(colRef);
       const flashcards = [];
       docs.forEach((doc) => {
@@ -29,8 +29,8 @@ export default function Flashcard() {
       });
       setFlashcards(flashcards);
     }
-    getFlashcard();
-  }, [search, user]);
+    getFlashcards();
+  }, [setName, user]);
 
   const handleCardClick = (id) => {
     setFlipped((prev) => ({
