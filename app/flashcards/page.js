@@ -17,7 +17,14 @@ export default function Flashcard() {
 
   useEffect(() => {
     async function getFlashcards() {
-      if (!user) return;
+      const { isLoaded, isSignedIn, user } = useUser();
+if (!isLoaded || !isSignedIn) {
+  console.error("User is not signed in or not loaded.");
+  return;
+}
+console.log("User ID:", user.id); // Make sure this logs the correct user ID
+
+
       const docRef = doc(collection(db, 'users'), user.id);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {

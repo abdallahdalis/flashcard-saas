@@ -85,7 +85,11 @@ export default function Generate() {
   const handleOpenDialog = () => setDialogOpen(true);
   const handleCloseDialog = () => setDialogOpen(false);
 
- /* const saveFlashcards = async () => {
+  const saveFlashcards = async () => {
+
+  if (!user) {
+      throw new Error("User not authenticated");
+    }
     
     if (!setName.trim()) {
       alert("Please enter a name for your flashcard set.");
@@ -122,7 +126,7 @@ export default function Generate() {
       console.error("Error saving flashcards:", error);
       alert("An error occurred while saving flashcards. Please try again.");
     }
-  };*/
+  };
 
   return (
     <Container maxWidth="md">
@@ -210,7 +214,41 @@ export default function Generate() {
         </Box>
       )}
 
-      
+      {flashcards.length > 0 && (
+        <Box sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpenDialog}
+          >
+            Save Flashcards
+          </Button>
+        </Box>
+      )}
+
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>Save Flashcard Set</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please enter a name for your flashcard set.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Set Name"
+            type="text"
+            fullWidth
+            value={setName}
+            onChange={(e) => setSetName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={saveFlashcards} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }

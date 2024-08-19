@@ -28,10 +28,10 @@ export default function Home() {
             Flashcard SaaS
           </Typography>
           <SignedOut>
-            <Button color="inherit" href="/sign-in">
+            <Button color="inherit" href="/sign-in/page.js">
               Login
             </Button>
-            <Button color="inherit" href="/sign-up">
+            <Button color="inherit" href="/sign-up/page.js">
               Sign Up
             </Button>
           </SignedOut>
