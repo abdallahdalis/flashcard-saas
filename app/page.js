@@ -112,7 +112,7 @@ export default function Home() {
                 variant="contained"
                 color="primary"
                 sx={{ mt: 2 }}
-                href="/generate"
+                href="/fllashcards"
               >
                 Choose Basic
               </Button>
