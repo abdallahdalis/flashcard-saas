@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { AppBar, Toolbar, Typography, Button, Box, Grid } from "@mui/material";
 import { SignedOut, SignedIn, UserButton } from "@clerk/nextjs"; // Assuming you're using Clerk for authentication
+import { currentUser } from "@clerk/nextjs/server";
 
-export default function Home() {
+export default async function Home() {
   const handleSubmit = async () => {
     const checkoutSession = await fetch("/api/checkout_sessions", {
       method: "POST",
@@ -20,27 +21,10 @@ export default function Home() {
     }
   };
 
+  const user = await currentUser();
+
   return (
     <main>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" style={{ flexGrow: 1 }}>
-            Flashcard SaaS
-          </Typography>
-          <SignedOut>
-            <Button color="inherit" href="/sign-in/page.js">
-              Login
-            </Button>
-            <Button color="inherit" href="/sign-up/page.js">
-              Sign Up
-            </Button>
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-        </Toolbar>
-      </AppBar>
-
       <Box sx={{ textAlign: "center", my: 4 }}>
         <Typography variant="h2" component="h1" gutterBottom>
           Welcome to Flashcard SaaS

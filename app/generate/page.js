@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect} from "react";
-import { useRouter } from 'next/navigation';
-import { useUser } from '@clerk/clerk-react';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/clerk-react";
 import {
   Container,
   TextField,
@@ -19,7 +19,13 @@ import {
   DialogActions,
   CardActionArea,
 } from "@mui/material";
-import { doc, collection, getDoc, writeBatch } from "firebase/firestore";
+import {
+  doc,
+  collection,
+  getDoc,
+  writeBatch,
+  setDoc,
+} from "firebase/firestore";
 import { db } from "../../firebase"; // Assuming you have firebase config setup
 
 export default function Generate() {
@@ -46,7 +52,6 @@ export default function Generate() {
       await setDoc(userDocRef, { flashcardSets: [] });
     }
   };
-
 
   const handleSubmit = async () => {
     if (!text.trim()) {
@@ -85,8 +90,7 @@ export default function Generate() {
   const handleOpenDialog = () => setDialogOpen(true);
   const handleCloseDialog = () => setDialogOpen(false);
 
- /* const saveFlashcards = async () => {
-    
+  const saveFlashcards = async () => {
     if (!setName.trim()) {
       alert("Please enter a name for your flashcard set.");
       return;
@@ -117,12 +121,12 @@ export default function Generate() {
       alert("Flashcards saved successfully!");
       handleCloseDialog();
       setSetName("");
-      router.push(`/flashcards/page.js`);
+      router.push(`/flashcards`);
     } catch (error) {
       console.error("Error saving flashcards:", error);
       alert("An error occurred while saving flashcards. Please try again.");
     }
-  };*/
+  };
 
   return (
     <Container maxWidth="md">
@@ -194,10 +198,14 @@ export default function Generate() {
                       >
                         <div>
                           <div>
-                            <Typography variant="h6" component='div'>{flashcard.front}</Typography>
+                            <Typography variant="h6" component="div">
+                              {flashcard.front}
+                            </Typography>
                           </div>
                           <div>
-                            <Typography variant="h6" component='div'>{flashcard.back}</Typography>
+                            <Typography variant="h6" component="div">
+                              {flashcard.back}
+                            </Typography>
                           </div>
                         </div>
                       </Box>
@@ -210,7 +218,41 @@ export default function Generate() {
         </Box>
       )}
 
-      
+      {flashcards.length > 0 && (
+        <Box sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpenDialog}
+          >
+            Save Flashcards
+          </Button>
+        </Box>
+      )}
+
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>Save Flashcard Set</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please enter a name for your flashcard set.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Set Name"
+            type="text"
+            fullWidth
+            value={setName}
+            onChange={(e) => setSetName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={saveFlashcards} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }

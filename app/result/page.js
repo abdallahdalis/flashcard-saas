@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { Container, CircularProgress, Typography, Box } from "@mui/material";
@@ -15,7 +17,9 @@ const ResultPage = () => {
     const fetchCheckoutSession = async () => {
       if (!session_id) return;
       try {
-        const res = await fetch(`/api/checkout_sessions?session_id=${session_id}`);
+        const res = await fetch(
+          `/api/checkout_sessions?session_id=${session_id}`
+        );
         const sessionData = await res.json();
         if (res.ok) {
           setSession(sessionData);
@@ -60,7 +64,8 @@ const ResultPage = () => {
           <Box sx={{ mt: 2 }}>
             <Typography variant="h6">Session ID: {session_id}</Typography>
             <Typography variant="body1">
-              We have received your payment. You will receive an email with the order details shortly.
+              We have received your payment. You will receive an email with the
+              order details shortly.
             </Typography>
           </Box>
         </>

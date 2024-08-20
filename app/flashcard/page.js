@@ -1,71 +1,161 @@
-import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { useUser } from '@clerk/clerk-react';
-import { collection, doc, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import CardActionArea from '@mui/material/CardActionArea';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+"use client";
+
+import React, { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useUser } from "@clerk/clerk-react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebase";
+import { FlashcardArray } from "react-quizlet-flashcard";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 export default function Flashcard() {
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { isLoaded, user } = useUser();
   const [flashcards, setFlashcards] = useState([]);
-  const [flipped, setFlipped] = useState({});
+  const [currentCard, setCurrentCard] = useState(1);
+  const controlRef = useRef({});
   const searchParams = useSearchParams();
-  const setName = searchParams.get('id');
+  const setName = searchParams.get("id");
+  const router = useRouter();
 
   useEffect(() => {
     async function getFlashcards() {
       if (!setName || !user) return;
-      const colRef = collection(doc(collection(db, 'users'), user.id), setName);
-      const docs = await getDocs(colRef);
-      const flashcards = [];
-      docs.forEach((doc) => {
-        flashcards.push({ id: doc.id, ...doc.data() });
-      });
-      setFlashcards(flashcards);
-    }
-    getFlashcards();
-  }, [setName, user]);
 
-  const handleCardClick = (id) => {
-    setFlipped((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
+      try {
+        const userDocRef = doc(db, "users", user.id);
+        const setDocRef = doc(userDocRef, "flashcardSets", setName);
+        const setDocSnap = await getDoc(setDocRef);
+
+        if (setDocSnap.exists()) {
+          const flashcardsData = setDocSnap.data().flashcards || [];
+          const flashcards = flashcardsData.map((flashcard, index) => ({
+            id: index,
+            frontHTML: <div>{flashcard.front}</div>,
+            backHTML: <div>{flashcard.back}</div>,
+          }));
+
+          setFlashcards(flashcards);
+        } else {
+          console.log("No such flashcard set exists!");
+          setFlashcards([]); // Set an empty array if no flashcards are found
+        }
+      } catch (error) {
+        console.error("Error fetching flashcards:", error);
+      }
+    }
+
+    if (isLoaded) {
+      getFlashcards();
+    }
+  }, [setName, user, isLoaded]);
 
   return (
     <Container maxWidth="md">
-      <Grid container spacing={3} sx={{ mt: 4 }}>
-        {flashcards.map((flashcard) => (
-          <Grid item xs={12} sm={6} md={4} key={flashcard.id}>
-            <Card>
-              <CardActionArea onClick={() => handleCardClick(flashcard.id)}>
-                <CardContent>
-                  <Box sx={{ /* Styling for flip animation */ }}>
-                    <div>
-                      <div>
-                        <Typography variant="h5" component="div">
-                          {flashcard.front}
-                        </Typography>
-                      </div>
-                      <div>
-                        <Typography variant="h5" component="div">
-                          {flashcard.back}
-                        </Typography>
-                      </div>
-                    </div>
-                  </Box>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-        ))}
+      {/* Back Button */}
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={() => router.push("/flashcards")}
+        sx={{ mt: 2, mb: 2 }}
+      >
+        Back
+      </Button>
+
+      <Grid container justifyContent="center" sx={{ mt: 2 }}>
+        {flashcards.length > 0 ? (
+          <>
+            <FlashcardArray
+              cards={flashcards}
+              controls={false}
+              showCount={false}
+              forwardRef={controlRef}
+              onCardChange={(id, index) => {
+                setCurrentCard(index);
+              }}
+              FlashcardArrayStyle={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: "20px",
+              }}
+              frontCardStyle={{
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              frontContentStyle={{
+                backgroundColor: "#f8f8f8",
+                border: "2px solid #ddd",
+                borderRadius: "10px",
+                padding: "20px",
+                textAlign: "center",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                fontSize: "3rem",
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+              }}
+              backContentStyle={{
+                backgroundColor: "#f8f8f8",
+                border: "2px solid #ccc",
+                borderRadius: "10px",
+                padding: "20px",
+                textAlign: "center",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                fontSize: "1.6rem",
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+              }}
+            />
+            <Grid container spacing={2} justifyContent="center" sx={{ mt: 2 }}>
+              <Grid item xs={12}>
+                <Typography
+                  variant="h6"
+                  align="center"
+                  sx={{ color: "white", mt: 2 }}
+                >
+                  {currentCard} / {flashcards.length}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    controlRef.current.resetArray();
+                    setCurrentCard(1);
+                  }}
+                >
+                  Reset
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => controlRef.current.prevCard()}
+                >
+                  Prev
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => controlRef.current.nextCard()}
+                >
+                  Next
+                </Button>
+              </Grid>
+            </Grid>
+          </>
+        ) : (
+          <div style={{ color: "white" }}>No flashcards found.</div>
+        )}
       </Grid>
     </Container>
   );
